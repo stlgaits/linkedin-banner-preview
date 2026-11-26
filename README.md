@@ -4,7 +4,9 @@ A web tool to **preview your LinkedIn banner** before publishing it: see where t
 
 It works for **both personal profile banners and company page banners**: pick the matching view in the tool and it applies the right dimensions and avatar shape (round for profiles, rounded square for company logos).
 
-![Screenshot](docs/screenshot.png)
+| Personal profile | Company page |
+|---|---|
+| ![Personal profile view](docs/screenshot-profile.png) | ![Company page view](docs/screenshot-company.png) |
 
 ## Features
 
