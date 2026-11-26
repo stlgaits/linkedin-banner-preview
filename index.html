@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aperçu de bannière LinkedIn</title>
+<style>
+  :root { --accent:#0a66c2; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#f4f2ee; color:#000000e6;
+         font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+
+  /* ---------- barre de réglages ---------- */
+  .bar { position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid #d0d0d0;
+         padding:10px 16px; display:flex; flex-wrap:wrap; gap:10px 22px; align-items:flex-end; font-size:13px; }
+  .bar label { display:flex; flex-direction:column; gap:3px; color:#555; }
+  .bar select, .bar input[type=number], .bar input[type=text] { font:inherit; padding:4px 6px; border:1px solid #bbb; border-radius:4px; background:#fff; }
+  .bar input[type=number] { width:70px; }
+  .bar .chk { flex-direction:row; align-items:center; gap:6px; color:#222; }
+  .bar .group { display:flex; gap:10px; align-items:flex-end; padding-left:18px; border-left:1px solid #ddd; }
+  .bar button { font:inherit; padding:5px 10px; border:1px solid #bbb; border-radius:4px; background:#f7f7f7; cursor:pointer; }
+  #infos { width:100%; color:#555; font-size:12px; }
+  #infos b { color:#000; }
+  #infos .warn { color:#b00020; font-weight:600; }
+
+  /* ---------- scène ---------- */
+  #scene { padding:24px 16px 60px; display:flex; justify-content:center; }
+  #fit { transform-origin: top left; }
+  #frame { background:#fff; border:1px solid #e0dfdc; border-radius:8px; overflow:visible; position:relative; }
+  #frame.mobile { border-radius:22px; border:8px solid #1b1f23; background:#fff; }
+
+  .banner { position:relative; overflow:hidden; background:#222; border-radius:8px 8px 0 0; }
+  #frame.mobile .banner { border-radius:12px 12px 0 0; }
+  .banner img { display:block; width:100%; height:100%; object-fit:cover; }
+
+  /* zone de sécurité (autour de l'avatar) : n'apparaît que sur la bannière */
+  .zone { position:absolute; border:2px dashed #ff2a2a; background:rgba(255,40,40,.18); display:none; pointer-events:none; }
+  .show-zone .zone { display:block; }
+
+  .avatar { position:absolute; z-index:5; background:#fff; border:4px solid #fff; overflow:hidden;
+            box-shadow:0 0 0 1px rgba(0,0,0,.08); }
+  .avatar .inner { width:100%; height:100%; background:linear-gradient(160deg,#5b7a99,#2f4559);
+                   display:flex; align-items:center; justify-content:center; color:#fff;
+                   font:800 44px/1 Arial,sans-serif; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ghost .avatar { opacity:.35; }
+
+  .info { padding:0 24px 24px; }
+  #frame.mobile .info { padding:0 16px 20px; }
+  .info h1 { margin:0 0 2px; font-size:24px; font-weight:600; }
+  #frame.mobile .info h1 { font-size:20px; }
+  .info .tag { margin:0; color:#000000e6; font-size:16px; }
+  #frame.mobile .info .tag { font-size:14px; }
+  .info .meta { margin-top:6px; color:#00000099; font-size:14px; }
+  .info .btns { margin-top:14px; display:flex; gap:8px; }
+  .info .btns span { padding:7px 18px; border-radius:20px; font-weight:600; border:1px solid #0a66c2; color:#0a66c2; }
+  .info .btns span:first-child { background:#0a66c2; color:#fff; }
+  .note { max-width:1128px; margin:0 auto; padding:0 16px 40px; color:#555; font-size:12.5px; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <label>Affichage
+    <select id="mode">
+      <option value="page-desktop">Page entreprise – ordinateur</option>
+      <option value="page-mobile">Page entreprise – mobile (mesuré)</option>
+      <option value="profil-desktop">Profil – ordinateur</option>
+      <option value="profil-mobile">Profil – mobile</option>
+    </select>
+  </label>
+
+  <label>Votre bannière
+    <input type="file" id="bannerFile" accept="image/*">
+  </label>
+  <label>Votre avatar (optionnel)
+    <input type="file" id="avatarFile" accept="image/*">
+  </label>
+
+  <label>Nom<input type="text" id="name" value="Votre nom"></label>
+  <label>Slogan<input type="text" id="tagline" value="Votre slogan ici"></label>
+
+  <label class="chk"><input type="checkbox" id="zone"> Montrer la zone à éviter</label>
+  <label class="chk"><input type="checkbox" id="ghost"> Avatar transparent</label>
+
+  <div class="group">
+    <label>Hauteur bannière <input type="number" id="bh" min="40" step="any"></label>
+    <label>Taille avatar <input type="number" id="as" min="40" step="1"></label>
+    <label>Décalage gauche <input type="number" id="al" min="0" step="1"></label>
+    <label>Chevauchement bannière <input type="number" id="ao" min="0" step="1"></label>
+    <label>Marge sécurité <input type="number" id="am" min="0" step="1"></label>
+    <button id="reset" type="button">Valeurs par défaut</button>
+  </div>
+
+  <div id="infos"></div>
+</div>
+
+<div id="scene">
+  <div id="fit">
+    <div id="frame">
+      <div class="banner" id="bannerBox">
+        <img id="bannerImg" alt="Bannière">
+        <div class="zone" id="zoneBox"></div>
+      </div>
+      <div class="avatar" id="avatarBox"><div class="inner" id="avatarInner">V</div></div>
+      <div class="info" id="info">
+        <h1 id="nameOut">Votre nom</h1>
+        <p class="tag" id="tagOut">Votre slogan ici</p>
+        <div class="meta">Secteur d'activité · Ville, Pays · 11-50 employés</div>
+        <div class="btns"><span>+ Suivre</span><span>Visiter le site web</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="note">
+  <b>Important :</b> les dimensions d'affichage de LinkedIn (taille et position de l'avatar, hauteur de bannière)
+  sont des <b>estimations</b> et peuvent changer. Comparez avec une capture de votre vraie page, et ajustez les
+  réglages ci-dessus jusqu'à ce que l'avatar tombe au même endroit : la zone rouge vous montre alors ce qui sera caché.
+  Rien n'est envoyé nulle part : tout reste dans votre navigateur.
+</p>
+
+<script>
+// Valeurs d'affichage en px, issues de mesures publiées par des tiers (nov. 2026) : LinkedIn ne publie PAS ces valeurs.
+// Tailles d'image recommandées (officiel LinkedIn) : page 1512×256, profil 1584×396.
+const PRESETS = {
+  'page-desktop':   { w:782, bh:134,   as:128, al:24, ao:63, am:12, round:false, mobile:false, kind:'page',
+                      note:'Mesures tierces (web public) : bannière 782×134, logo 128 px. Décalage et chevauchement du logo : déduits, fiabilité faible à moyenne.' },
+  'page-mobile':    { w:428, bh:73.3,  as:99,  al:13, ao:34, am:8,  round:false, rad:14, mobile:true,  kind:'page',
+                      note:'MESURÉ sur une capture de l\'app mobile (écran 1080 px de large, ramené à 428 px) : logo 99 px cadre blanc compris, à 13 px du bord, 34 px sur la bannière. La hauteur de bannière (73 px) est déduite du format 5,9:1 : le haut de la bannière était transparent sur la capture.' },
+  'profil-desktop': { w:782, bh:195.5, as:128, al:32, ao:68, am:12, round:true,  mobile:false, kind:'profil',
+                      note:'Mesures tierces (web public) : bannière 782×195,5, avatar rond 128 px, à 32 px du bord, 68 px sur la bannière. Une autre source donne un avatar d\'environ 152 px.' },
+  'profil-mobile':  { w:428, bh:107,   as:128, al:24, ao:76, am:8,  round:true,  mobile:true,  kind:'profil',
+                      note:'Mesure tierce sur le web mobile (viewport 430 px) : avatar rond 128 px, à 24 px du bord, 76 px sur la bannière. Pas de mesure fiable pour l\'app native : à valider sur votre téléphone.' },
+};
+// Bannière de remplacement (SVG intégré) tant qu'aucun fichier n'est chargé, aux proportions recommandées.
+const placeholder = (w, h) => 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+  '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b6ea5"/><stop offset="1" stop-color="#1d3557"/></linearGradient></defs>' +
+  '<rect width="100%" height="100%" fill="url(#g)"/>' +
+  '<text x="50%" y="50%" fill="#fff" fill-opacity=".85" font-family="Arial,sans-serif" font-size="' + Math.round(h / 9) +
+  '" text-anchor="middle" dominant-baseline="middle">Chargez votre bannière (' + w + '×' + h + ')</text></svg>');
+const DEFAULT_BANNER = { page: placeholder(1512, 256), profil: placeholder(1584, 396) };
+
+const $ = id => document.getElementById(id);
+const modeSel = $('mode'), frame = $('frame'), fit = $('fit');
+let customBanner = null;   // URL d'un fichier choisi par l'utilisateur
+let currentPreset = null;
+
+function fillInputs(p) { $('bh').value=p.bh; $('as').value=p.as; $('al').value=p.al; $('ao').value=p.ao; $('am').value=p.am; }
+
+function render() {
+  const p = currentPreset;
+  const bh = +$('bh').value, as = +$('as').value, al = +$('al').value, ao = +$('ao').value, am = +$('am').value;
+
+  frame.className = p.mobile ? 'mobile' : '';
+  frame.style.width = (p.w + (p.mobile ? 16 : 2)) + 'px';
+  const bw = p.w;                       // largeur utile de la bannière
+  $('bannerBox').style.height = bh + 'px';
+  $('bannerImg').src = customBanner || DEFAULT_BANNER[p.kind];
+
+  // avatar (positionné par rapport au cadre, sous la bannière)
+  // (position absolue : relative à l'intérieur du cadre, donc sans ajouter son épaisseur)
+  const av = $('avatarBox');
+  av.style.width = av.style.height = as + 'px';
+  av.style.left = al + 'px';
+  av.style.top  = (bh - ao) + 'px';
+  const rad = p.round ? '50%' : (p.rad || 6) + 'px';
+  av.style.borderRadius = rad;
+  $('avatarInner').style.fontSize = (as * 0.45) + 'px';
+  $('nameOut').textContent = $('name').value;
+  $('tagOut').textContent = $('tagline').value;
+  if (!$('avatarInner').querySelector('img')) $('avatarInner').textContent = ($('name').value.trim()[0] || '?').toUpperCase();
+
+  // zone à éviter = avatar + marge, visible seulement sur la bannière
+  const z = $('zoneBox');
+  z.style.left = (al - am) + 'px';
+  z.style.top = (bh - ao - am) + 'px';
+  z.style.width = z.style.height = (as + 2 * am) + 'px';
+  z.style.borderRadius = p.round ? '50%' : ((p.rad || 6) + am) + 'px';
+
+  document.body.classList.toggle('show-zone', $('zone').checked);
+  frame.classList.toggle('ghost', $('ghost').checked);
+  document.body.classList.toggle('ghost', $('ghost').checked);
+
+  // texte sous la bannière : on laisse la place à l'avatar
+  $('info').style.paddingTop = Math.max(12, as - ao + 12) + 'px';
+
+  updateFit();
+  updateInfos(p, bw, bh);
+}
+
+function updateFit() {
+  const avail = document.documentElement.clientWidth - 32;
+  const s = Math.min(1, avail / frame.offsetWidth);
+  fit.style.transform = 'scale(' + s + ')';
+  fit.style.width = frame.offsetWidth + 'px';
+  fit.style.height = frame.offsetHeight + 'px';
+  $('scene').style.height = (frame.offsetHeight * s + 90) + 'px';
+  fit.dataset.scale = s;
+}
+
+function updateInfos(p, bw, bh) {
+  const img = $('bannerImg');
+  const check = () => {
+    const nr = img.naturalWidth / img.naturalHeight, tr = bw / bh;
+    const ok = Math.abs(nr / tr - 1) < 0.03;
+    const rec = p.kind === 'page' ? '1512×256 px' : '1584×396 px';
+    $('infos').innerHTML =
+      'Bannière affichée à <b>' + bw + '×' + bh + ' px</b> (image recommandée par LinkedIn : <b>' + rec + '</b>) · ' +
+      'image affichée : <b>' + img.naturalWidth + '×' + img.naturalHeight + ' px</b>' +
+      (ok ? '' : ' · <span class="warn">⚠ proportions différentes : LinkedIn recadrera l\'image</span>') +
+      ' · zoom d\'affichage : ' + Math.round((fit.dataset.scale || 1) * 100) + ' %' +
+      '<br><i>' + p.note + '</i>';
+  };
+  if (img.complete && img.naturalWidth) check(); else img.onload = check;
+}
+
+function setMode() {
+  currentPreset = PRESETS[modeSel.value];
+  fillInputs(currentPreset);
+  render();
+}
+
+modeSel.addEventListener('change', () => setMode());
+$('bannerFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  customBanner = URL.createObjectURL(f); render();
+});
+$('avatarFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  $('avatarInner').innerHTML = '<img alt="Avatar" src="' + URL.createObjectURL(f) + '">';
+});
+['bh','as','al','ao','am','zone','ghost','name','tagline'].forEach(id => $(id).addEventListener('input', render));
+$('reset').addEventListener('click', () => { fillInputs(currentPreset); render(); });
+window.addEventListener('resize', updateFit);
+
+// Paramètres d'URL optionnels : ?mode=page-mobile&zone=1&ghost=1
+const q = new URLSearchParams(location.search);
+if (PRESETS[q.get('mode')]) modeSel.value = q.get('mode');
+if (q.get('zone') === '1') $('zone').checked = true;
+if (q.get('ghost') === '1') $('ghost').checked = true;
+
+setMode();
+</script>
+</body>
+</html>
