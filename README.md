@@ -1,12 +1,14 @@
 # LinkedIn Banner Preview
 
-A web tool to **preview your LinkedIn banner** before publishing it: see where the avatar or logo covers your image, on a company page or a profile, on desktop or mobile.
+A web tool to **preview your LinkedIn banner** before publishing it: see where the avatar or logo covers your image, on desktop or mobile.
+
+It works for **both personal profile banners and company page banners**: pick the matching view in the tool and it applies the right dimensions and avatar shape (round for profiles, rounded square for company logos).
 
 ![Screenshot](docs/screenshot.png)
 
 ## Features
 
-- 4 views: company page and profile, each on desktop and mobile
+- 4 views: **personal profile** and **company page**, each on desktop and mobile
 - Load your own banner and avatar (optional) from disk
 - Red safe zone around the avatar: what not to put there
 - Transparent avatar to see what it hides
@@ -41,10 +43,10 @@ All UI strings live in the `I18N` object at the top of the script in `index.html
 
 ## Recommended sizes
 
-| Type | Image size |
-|---|---|
-| Company page | 1512 × 256 px |
-| Profile | 1584 × 396 px |
+| Type | Image size | Avatar shape |
+|---|---|---|
+| Personal profile | 1584 × 396 px | Round |
+| Company page | 1512 × 256 px | Rounded square (logo) |
 
 ## ⚠ Measurement accuracy
 
