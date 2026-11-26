@@ -1,55 +1,55 @@
 # LinkedIn Banner Preview
 
-Un outil web pour **prévisualiser une bannière LinkedIn** avant de la publier : voyez où l'avatar ou le logo recouvre votre image, sur une page entreprise ou un profil, sur ordinateur ou mobile.
+A web tool to **preview your LinkedIn banner** before publishing it: see where the avatar or logo covers your image, on a company page or a profile, on desktop or mobile.
 
-![Capture d'écran](docs/screenshot.png)
+![Screenshot](docs/screenshot.png)
 
-## Fonctionnalités
+## Features
 
-- 4 modes : page entreprise et profil, chacun en version ordinateur et mobile
-- Chargement de votre bannière et de votre avatar (optionnel) depuis votre disque
-- Zone de sécurité en rouge autour de l'avatar : ce qu'il ne faut pas y placer
-- Avatar transparent pour voir ce qu'il cache
-- Nom et slogan modifiables
-- Réglages fins (hauteur de bannière, taille et position de l'avatar, marge) avec retour aux valeurs par défaut
-- Avertissement si les proportions de votre image diffèrent du format recommandé
-- Un seul fichier HTML, sans dépendance, sans build
+- 4 views: company page and profile, each on desktop and mobile
+- Load your own banner and avatar (optional) from disk
+- Red safe zone around the avatar: what not to put there
+- Transparent avatar to see what it hides
+- Editable name and tagline
+- Fine-tuning (banner height, avatar size and position, margin) with reset to defaults
+- Warning when your image proportions differ from the recommended format
+- A single HTML file: no dependencies, no build
 
-## Utilisation
+## Usage
 
-Ouvrez `index.html` dans votre navigateur, ou utilisez la version en ligne si elle est publiée via GitHub Pages.
+Open `index.html` in your browser, or use the hosted version if published via GitHub Pages.
 
-**Vos images ne quittent jamais votre navigateur** : rien n'est envoyé nulle part.
+**Your images never leave your browser**: nothing is uploaded anywhere.
 
-Des paramètres d'URL permettent de partager une configuration :
+URL parameters let you share a configuration:
 
 ```
 index.html?mode=page-mobile&zone=1&ghost=1
 ```
 
-| Paramètre | Valeurs |
+| Parameter | Values |
 |---|---|
 | `mode` | `page-desktop`, `page-mobile`, `profil-desktop`, `profil-mobile` |
-| `zone` | `1` pour afficher la zone à éviter |
-| `ghost` | `1` pour rendre l'avatar transparent |
+| `zone` | `1` to show the area to avoid |
+| `ghost` | `1` to make the avatar transparent |
 
-## Formats recommandés
+## Recommended sizes
 
-| Type | Taille de l'image |
+| Type | Image size |
 |---|---|
-| Page entreprise | 1512 × 256 px |
-| Profil | 1584 × 396 px |
+| Company page | 1512 × 256 px |
+| Profile | 1584 × 396 px |
 
-## ⚠ Précision des mesures
+## ⚠ Measurement accuracy
 
-LinkedIn **ne publie pas** les dimensions d'affichage exactes (avatar, hauteur de bannière). Les presets viennent de mesures publiées par des tiers et d'une mesure sur l'app mobile. Ils sont **approximatifs** et peuvent changer sans préavis. Chaque preset indique sa source et son niveau de fiabilité dans l'outil.
+LinkedIn **does not publish** its exact display dimensions (avatar, banner height). The presets come from third-party published measurements and one measurement on the mobile app. They are **approximate** and may change without notice. Each preset states its source and reliability in the tool.
 
-Comparez avec une capture de votre vraie page et ajustez les réglages. Les corrections de mesures sont bienvenues.
+Compare with a screenshot of your real page and adjust the settings. Measurement corrections are welcome.
 
-## Contribuer
+## Contributing
 
-Les issues et pull requests sont bienvenues, en particulier pour affiner les presets (avec une source ou une capture).
+Issues and pull requests are welcome, especially to refine the presets (with a source or a screenshot).
 
-## Licence
+## License
 
 [MIT](LICENSE)
