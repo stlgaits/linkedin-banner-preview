@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LinkedIn Banner Preview</title>
+<title data-i18n="title">LinkedIn Banner Preview</title>
 <style>
   :root { --accent:#0a66c2; }
   * { box-sizing: border-box; }
@@ -61,35 +61,39 @@
 <body>
 
 <div class="bar">
-  <label>View
+  <label><span data-i18n="language">Language</span>
+    <select id="lang"><option value="en">English</option><option value="fr">Français</option></select>
+  </label>
+
+  <label><span data-i18n="view">View</span>
     <select id="mode">
-      <option value="page-desktop">Company page – desktop</option>
-      <option value="page-mobile">Company page – mobile (measured)</option>
-      <option value="profil-desktop">Profile – desktop</option>
-      <option value="profil-mobile">Profile – mobile</option>
+      <option value="page-desktop" data-i18n="mode.page-desktop">Company page – desktop</option>
+      <option value="page-mobile" data-i18n="mode.page-mobile">Company page – mobile (measured)</option>
+      <option value="profil-desktop" data-i18n="mode.profil-desktop">Profile – desktop</option>
+      <option value="profil-mobile" data-i18n="mode.profil-mobile">Profile – mobile</option>
     </select>
   </label>
 
-  <label>Your banner
+  <label><span data-i18n="banner">Your banner</span>
     <input type="file" id="bannerFile" accept="image/*">
   </label>
-  <label>Your avatar (optional)
+  <label><span data-i18n="avatar">Your avatar (optional)</span>
     <input type="file" id="avatarFile" accept="image/*">
   </label>
 
-  <label>Name<input type="text" id="name" value="Your name"></label>
-  <label>Tagline<input type="text" id="tagline" value="Your tagline here"></label>
+  <label><span data-i18n="name">Name</span><input type="text" id="name"></label>
+  <label><span data-i18n="tagline">Tagline</span><input type="text" id="tagline"></label>
 
-  <label class="chk"><input type="checkbox" id="zone"> Show the area to avoid</label>
-  <label class="chk"><input type="checkbox" id="ghost"> Transparent avatar</label>
+  <label class="chk"><input type="checkbox" id="zone"> <span data-i18n="zone">Show the area to avoid</span></label>
+  <label class="chk"><input type="checkbox" id="ghost"> <span data-i18n="ghost">Transparent avatar</span></label>
 
   <div class="group">
-    <label>Banner height <input type="number" id="bh" min="40" step="any"></label>
-    <label>Avatar size <input type="number" id="as" min="40" step="1"></label>
-    <label>Left offset <input type="number" id="al" min="0" step="1"></label>
-    <label>Banner overlap <input type="number" id="ao" min="0" step="1"></label>
-    <label>Safety margin <input type="number" id="am" min="0" step="1"></label>
-    <button id="reset" type="button">Reset to defaults</button>
+    <label><span data-i18n="bh">Banner height</span> <input type="number" id="bh" min="40" step="any"></label>
+    <label><span data-i18n="as">Avatar size</span> <input type="number" id="as" min="40" step="1"></label>
+    <label><span data-i18n="al">Left offset</span> <input type="number" id="al" min="0" step="1"></label>
+    <label><span data-i18n="ao">Banner overlap</span> <input type="number" id="ao" min="0" step="1"></label>
+    <label><span data-i18n="am">Safety margin</span> <input type="number" id="am" min="0" step="1"></label>
+    <button id="reset" type="button" data-i18n="reset">Reset to defaults</button>
   </div>
 
   <div id="infos"></div>
@@ -104,43 +108,111 @@
       </div>
       <div class="avatar" id="avatarBox"><div class="inner" id="avatarInner">Y</div></div>
       <div class="info" id="info">
-        <h1 id="nameOut">Your name</h1>
-        <p class="tag" id="tagOut">Your tagline here</p>
-        <div class="meta">Industry · City, Country · 11-50 employees</div>
-        <div class="btns"><span>+ Follow</span><span>Visit website</span></div>
+        <h1 id="nameOut"></h1>
+        <p class="tag" id="tagOut"></p>
+        <div class="meta" data-i18n="meta"></div>
+        <div class="btns"><span data-i18n="follow">+ Follow</span><span data-i18n="visit">Visit website</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<p class="note">
-  <b>Important:</b> LinkedIn's display dimensions (avatar size and position, banner height)
-  are <b>estimates</b> and may change. Compare with a screenshot of your real page and adjust the
-  settings above until the avatar lands in the same spot: the red zone then shows what will be hidden.
-  Nothing is uploaded anywhere: everything stays in your browser.
-</p>
+<p class="note" data-i18n-html="footer"></p>
 
 <script>
 // Display values in px, taken from third-party published measurements (Nov. 2026): LinkedIn does NOT publish these values.
 // Recommended image sizes (official LinkedIn): page 1512×256, profile 1584×396.
+// ---------- internationalisation ----------
+// To add a language: copy the `en` block below, translate the values, and add an <option> to #lang.
+const I18N = {
+  en: {
+    "title": "LinkedIn Banner Preview",
+    "language": "Language",
+    "view": "View",
+    "mode.page-desktop": "Company page – desktop",
+    "mode.page-mobile": "Company page – mobile (measured)",
+    "mode.profil-desktop": "Profile – desktop",
+    "mode.profil-mobile": "Profile – mobile",
+    "banner": "Your banner",
+    "avatar": "Your avatar (optional)",
+    "name": "Name",
+    "tagline": "Tagline",
+    "zone": "Show the area to avoid",
+    "ghost": "Transparent avatar",
+    "bh": "Banner height",
+    "as": "Avatar size",
+    "al": "Left offset",
+    "ao": "Banner overlap",
+    "am": "Safety margin",
+    "reset": "Reset to defaults",
+    "meta": "Industry · City, Country · 11-50 employees",
+    "follow": "+ Follow",
+    "visit": "Visit website",
+    "defName": "Your name",
+    "defTagline": "Your tagline here",
+    "upload": "Upload your banner ({w}×{h})",
+    "info": "Banner displayed at <b>{bw}×{bh} px</b> (image size recommended by LinkedIn: <b>{rec}</b>) · your image: <b>{nw}×{nh} px</b>",
+    "warn": "⚠ different proportions: LinkedIn will crop the image",
+    "zoom": "display zoom: {z} %",
+    "footer": "<b>Important:</b> LinkedIn's display dimensions (avatar size and position, banner height) are <b>estimates</b> and may change. Compare with a screenshot of your real page and adjust the settings above until the avatar lands in the same spot: the red zone then shows what will be hidden. Nothing is uploaded anywhere: everything stays in your browser.",
+    "note.page-desktop": "Third-party measurements (public web): banner 782×134, logo 128 px. Logo offset and overlap are inferred, low to medium reliability.",
+    "note.page-mobile": "MEASURED on a screenshot of the mobile app (1080 px wide screen, scaled to 428 px): 99 px logo including the white frame, 13 px from the edge, 34 px over the banner. Banner height (73 px) is inferred from the 5.9:1 ratio: the top of the banner was transparent in the screenshot.",
+    "note.profil-desktop": "Third-party measurements (public web): banner 782×195.5, round 128 px avatar, 32 px from the edge, 68 px over the banner. Another source gives an avatar of about 152 px.",
+    "note.profil-mobile": "Third-party measurement on mobile web (430 px viewport): round 128 px avatar, 24 px from the edge, 76 px over the banner. No reliable measurement for the native app: check on your phone.",
+  },
+  fr: {
+    "title": "Aperçu de bannière LinkedIn",
+    "language": "Langue",
+    "view": "Affichage",
+    "mode.page-desktop": "Page entreprise – ordinateur",
+    "mode.page-mobile": "Page entreprise – mobile (mesuré)",
+    "mode.profil-desktop": "Profil – ordinateur",
+    "mode.profil-mobile": "Profil – mobile",
+    "banner": "Votre bannière",
+    "avatar": "Votre avatar (optionnel)",
+    "name": "Nom",
+    "tagline": "Slogan",
+    "zone": "Montrer la zone à éviter",
+    "ghost": "Avatar transparent",
+    "bh": "Hauteur bannière",
+    "as": "Taille avatar",
+    "al": "Décalage gauche",
+    "ao": "Chevauchement bannière",
+    "am": "Marge sécurité",
+    "reset": "Valeurs par défaut",
+    "meta": "Secteur d'activité · Ville, Pays · 11-50 employés",
+    "follow": "+ Suivre",
+    "visit": "Visiter le site web",
+    "defName": "Votre nom",
+    "defTagline": "Votre slogan ici",
+    "upload": "Chargez votre bannière ({w}×{h})",
+    "info": "Bannière affichée à <b>{bw}×{bh} px</b> (image recommandée par LinkedIn : <b>{rec}</b>) · votre image : <b>{nw}×{nh} px</b>",
+    "warn": "⚠ proportions différentes : LinkedIn recadrera l'image",
+    "zoom": "zoom d'affichage : {z} %",
+    "footer": "<b>Important :</b> les dimensions d'affichage de LinkedIn (taille et position de l'avatar, hauteur de bannière) sont des <b>estimations</b> et peuvent changer. Comparez avec une capture de votre vraie page, et ajustez les réglages ci-dessus jusqu'à ce que l'avatar tombe au même endroit : la zone rouge vous montre alors ce qui sera caché. Rien n'est envoyé nulle part : tout reste dans votre navigateur.",
+    "note.page-desktop": "Mesures tierces (web public) : bannière 782×134, logo 128 px. Décalage et chevauchement du logo : déduits, fiabilité faible à moyenne.",
+    "note.page-mobile": "MESURÉ sur une capture de l'app mobile (écran 1080 px de large, ramené à 428 px) : logo 99 px cadre blanc compris, à 13 px du bord, 34 px sur la bannière. La hauteur de bannière (73 px) est déduite du format 5,9:1 : le haut de la bannière était transparent sur la capture.",
+    "note.profil-desktop": "Mesures tierces (web public) : bannière 782×195,5, avatar rond 128 px, à 32 px du bord, 68 px sur la bannière. Une autre source donne un avatar d'environ 152 px.",
+    "note.profil-mobile": "Mesure tierce sur le web mobile (viewport 430 px) : avatar rond 128 px, à 24 px du bord, 76 px sur la bannière. Pas de mesure fiable pour l'app native : à valider sur votre téléphone.",
+  },
+};
+let lang = 'en';
+const t = (key, vars = {}) =>
+  (I18N[lang][key] ?? I18N.en[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k]);
+
 const PRESETS = {
-  'page-desktop':   { w:782, bh:134,   as:128, al:24, ao:63, am:12, round:false, mobile:false, kind:'page',
-                      note:'Third-party measurements (public web): banner 782×134, logo 128 px. Logo offset and overlap are inferred, low to medium reliability.' },
-  'page-mobile':    { w:428, bh:73.3,  as:99,  al:13, ao:34, am:8,  round:false, rad:14, mobile:true,  kind:'page',
-                      note:'MEASURED on a screenshot of the mobile app (1080 px wide screen, scaled to 428 px): 99 px logo including the white frame, 13 px from the edge, 34 px over the banner. Banner height (73 px) is inferred from the 5.9:1 ratio: the top of the banner was transparent in the screenshot.' },
-  'profil-desktop': { w:782, bh:195.5, as:128, al:32, ao:68, am:12, round:true,  mobile:false, kind:'profil',
-                      note:'Third-party measurements (public web): banner 782×195.5, round 128 px avatar, 32 px from the edge, 68 px over the banner. Another source gives an avatar of about 152 px.' },
-  'profil-mobile':  { w:428, bh:107,   as:128, al:24, ao:76, am:8,  round:true,  mobile:true,  kind:'profil',
-                      note:'Third-party measurement on mobile web (430 px viewport): round 128 px avatar, 24 px from the edge, 76 px over the banner. No reliable measurement for the native app: check on your phone.' },
+  'page-desktop':   { w:782, bh:134,   as:128, al:24, ao:63, am:12, round:false, mobile:false, kind:'page' },
+  'page-mobile':    { w:428, bh:73.3,  as:99,  al:13, ao:34, am:8,  round:false, rad:14, mobile:true,  kind:'page' },
+  'profil-desktop': { w:782, bh:195.5, as:128, al:32, ao:68, am:12, round:true,  mobile:false, kind:'profil' },
+  'profil-mobile':  { w:428, bh:107,   as:128, al:24, ao:76, am:8,  round:true,  mobile:true,  kind:'profil' },
 };
 // Placeholder banner (inline SVG) until a file is loaded, at the recommended proportions.
-const placeholder = (w, h) => 'data:image/svg+xml;utf8,' + encodeURIComponent(
+const placeholder = (kind) => { const [w, h] = kind === 'page' ? [1512, 256] : [1584, 396]; return 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
   '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b6ea5"/><stop offset="1" stop-color="#1d3557"/></linearGradient></defs>' +
   '<rect width="100%" height="100%" fill="url(#g)"/>' +
   '<text x="50%" y="50%" fill="#fff" fill-opacity=".85" font-family="Arial,sans-serif" font-size="' + Math.round(h / 9) +
-  '" text-anchor="middle" dominant-baseline="middle">Upload your banner (' + w + '×' + h + ')</text></svg>');
-const DEFAULT_BANNER = { page: placeholder(1512, 256), profil: placeholder(1584, 396) };
+  '" text-anchor="middle" dominant-baseline="middle">' + t('upload', { w, h }) + '</text></svg>'); };
 
 const $ = id => document.getElementById(id);
 const modeSel = $('mode'), frame = $('frame'), fit = $('fit');
@@ -148,6 +220,25 @@ let customBanner = null;   // URL of a file chosen by the user
 let currentPreset = null;
 
 function fillInputs(p) { $('bh').value=p.bh; $('as').value=p.as; $('al').value=p.al; $('ao').value=p.ao; $('am').value=p.am; }
+
+let nameTouched = false, taglineTouched = false;
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  if (!nameTouched) $('name').value = t('defName');
+  if (!taglineTouched) $('tagline').value = t('defTagline');
+  $('lang').value = lang;
+}
+
+function setLang(l, persist) {
+  if (!I18N[l]) return;
+  lang = l;
+  if (persist) try { localStorage.setItem('lang', l); } catch (e) {}
+  applyLang();
+  if (currentPreset) render();
+}
 
 function render() {
   const p = currentPreset;
@@ -157,7 +248,7 @@ function render() {
   frame.style.width = (p.w + (p.mobile ? 16 : 2)) + 'px';
   const bw = p.w;                       // usable banner width
   $('bannerBox').style.height = bh + 'px';
-  $('bannerImg').src = customBanner || DEFAULT_BANNER[p.kind];
+  $('bannerImg').src = customBanner || placeholder(p.kind);
 
   // avatar (positioned relative to the frame, below the banner)
   // (absolute position inside the frame, so it doesn't add its border thickness)
@@ -207,11 +298,10 @@ function updateInfos(p, bw, bh) {
     const ok = Math.abs(nr / tr - 1) < 0.03;
     const rec = p.kind === 'page' ? '1512×256 px' : '1584×396 px';
     $('infos').innerHTML =
-      'Banner displayed at <b>' + bw + '×' + bh + ' px</b> (image size recommended by LinkedIn: <b>' + rec + '</b>) · ' +
-      'displayed image: <b>' + img.naturalWidth + '×' + img.naturalHeight + ' px</b>' +
-      (ok ? '' : ' · <span class="warn">⚠ different proportions: LinkedIn will crop the image</span>') +
-      ' · display zoom: ' + Math.round((fit.dataset.scale || 1) * 100) + ' %' +
-      '<br><i>' + p.note + '</i>';
+      t('info', { bw, bh, rec, nw: img.naturalWidth, nh: img.naturalHeight }) +
+      (ok ? '' : ' · <span class="warn">' + t('warn') + '</span>') +
+      ' · ' + t('zoom', { z: Math.round((fit.dataset.scale || 1) * 100) }) +
+      '<br><i>' + t('note.' + modeSel.value) + '</i>';
   };
   if (img.complete && img.naturalWidth) check(); else img.onload = check;
 }
@@ -233,14 +323,21 @@ $('avatarFile').addEventListener('change', e => {
 });
 ['bh','as','al','ao','am','zone','ghost','name','tagline'].forEach(id => $(id).addEventListener('input', render));
 $('reset').addEventListener('click', () => { fillInputs(currentPreset); render(); });
+$('lang').addEventListener('change', e => setLang(e.target.value, true));
+$('name').addEventListener('input', () => { nameTouched = true; });
+$('tagline').addEventListener('input', () => { taglineTouched = true; });
 window.addEventListener('resize', updateFit);
 
-// Optional URL parameters : ?mode=page-mobile&zone=1&ghost=1
+// Optional URL parameters (also: ?lang=fr) : ?mode=page-mobile&zone=1&ghost=1
 const q = new URLSearchParams(location.search);
 if (PRESETS[q.get('mode')]) modeSel.value = q.get('mode');
 if (q.get('zone') === '1') $('zone').checked = true;
 if (q.get('ghost') === '1') $('ghost').checked = true;
 
+let saved = null;
+try { saved = localStorage.getItem('lang'); } catch (e) {}
+const guess = (navigator.language || 'en').slice(0, 2).toLowerCase();
+setLang([q.get('lang'), saved, guess].find(l => I18N[l]) || 'en', false);
 setMode();
 </script>
 </body>

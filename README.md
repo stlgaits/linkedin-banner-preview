@@ -11,6 +11,7 @@ A web tool to **preview your LinkedIn banner** before publishing it: see where t
 - Red safe zone around the avatar: what not to put there
 - Transparent avatar to see what it hides
 - Editable name and tagline
+- Available in English and French, with a language switch (auto-detected from your browser, or `?lang=fr`)
 - Fine-tuning (banner height, avatar size and position, margin) with reset to defaults
 - Warning when your image proportions differ from the recommended format
 - A single HTML file: no dependencies, no build
@@ -32,6 +33,11 @@ index.html?mode=page-mobile&zone=1&ghost=1
 | `mode` | `page-desktop`, `page-mobile`, `profil-desktop`, `profil-mobile` |
 | `zone` | `1` to show the area to avoid |
 | `ghost` | `1` to make the avatar transparent |
+| `lang` | `en` or `fr` |
+
+## Adding a language
+
+All UI strings live in the `I18N` object at the top of the script in `index.html`. Copy the `en` block, translate the values, and add an `<option>` to the `#lang` select. Pull requests for new languages are welcome.
 
 ## Recommended sizes
 
