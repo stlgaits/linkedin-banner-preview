@@ -10,24 +10,32 @@
  * Preset keys (`profil-*`) are part of the public URL API (`?mode=`): keep them stable.
  */
 
-/**
- * @typedef {'page' | 'profil'} BannerKind
- *
- * @typedef {object} Preset
- * @property {BannerKind} kind Company page or personal profile.
- * @property {number} width Usable banner width.
- * @property {number} bannerHeight Banner height.
- * @property {number} avatarSize Avatar (or logo) size, frame included.
- * @property {number} left Avatar distance from the left edge.
- * @property {number} overlap How far the avatar overlaps the banner.
- * @property {number} margin Safety margin around the avatar.
- * @property {boolean} round Round avatar (profile) or rounded square (company logo).
- * @property {number} cornerRadius Corner radius for non-round avatars.
- * @property {boolean} mobile Render inside a phone-like frame.
- */
+/** Company page or personal profile. */
+export type BannerKind = 'page' | 'profil';
 
-/** @type {Readonly<Record<string, Preset>>} */
-export const PRESETS = Object.freeze({
+export interface Preset {
+  kind: BannerKind;
+  /** Usable banner width. */
+  width: number;
+  /** Banner height. */
+  bannerHeight: number;
+  /** Avatar (or logo) size, frame included. */
+  avatarSize: number;
+  /** Avatar distance from the left edge. */
+  left: number;
+  /** How far the avatar overlaps the banner. */
+  overlap: number;
+  /** Safety margin around the avatar. */
+  margin: number;
+  /** Round avatar (profile) or rounded square (company logo). */
+  round: boolean;
+  /** Corner radius for non-round avatars. */
+  cornerRadius: number;
+  /** Render inside a phone-like frame. */
+  mobile: boolean;
+}
+
+export const PRESETS = {
   'page-desktop': {
     kind: 'page',
     width: 782,
@@ -76,15 +84,20 @@ export const PRESETS = Object.freeze({
     cornerRadius: 6,
     mobile: true,
   },
-});
+} as const satisfies Record<string, Preset>;
 
-export const DEFAULT_MODE = 'page-desktop';
+export type ModeKey = keyof typeof PRESETS;
+
+export const DEFAULT_MODE: ModeKey = 'page-desktop';
+
+export const isModeKey = (key: unknown): key is ModeKey =>
+  typeof key === 'string' && Object.hasOwn(PRESETS, key);
 
 /** Recommended image sizes, per banner kind. */
-export const RECOMMENDED_SIZE = Object.freeze({
+export const RECOMMENDED_SIZE: Readonly<Record<BannerKind, { width: number; height: number }>> = {
   page: { width: 1512, height: 256 },
   profil: { width: 1584, height: 396 },
-});
+};
 
 /** Tolerance on the aspect-ratio comparison between the image and the displayed banner. */
 export const ASPECT_TOLERANCE = 0.03;

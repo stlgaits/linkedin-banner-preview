@@ -1,5 +1,7 @@
-/** @type {Record<string, string>} */
-export default {
+import type { Messages } from './en';
+
+// Typed as `Messages`: a missing or unknown key is a compile error.
+const fr: Messages = {
   title: 'Aperçu de bannière LinkedIn',
   language: 'Langue',
   view: 'Affichage',
@@ -39,3 +41,5 @@ export default {
   'note.profil-mobile':
     "Mesure tierce sur le web mobile (viewport 430 px) : avatar rond 128 px, à 24 px du bord, 76 px sur la bannière. Pas de mesure fiable pour l'app native : à valider sur votre téléphone.",
 };
+
+export default fr;

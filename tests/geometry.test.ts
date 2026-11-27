@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { computeLayout, fitScale, hasMatchingAspect, placeholderBanner } from '../src/geometry.js';
-import { PRESETS, RECOMMENDED_SIZE } from '../src/presets.js';
+import { computeLayout, fitScale, hasMatchingAspect, placeholderBanner } from '../src/geometry';
+import { PRESETS, RECOMMENDED_SIZE, type Preset } from '../src/presets';
 
-const settingsOf = (p) => ({
+const settingsOf = (p: Preset) => ({
   bannerHeight: p.bannerHeight,
   avatarSize: p.avatarSize,
   left: p.left,

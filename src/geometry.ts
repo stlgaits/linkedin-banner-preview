@@ -1,4 +1,4 @@
-import { ASPECT_TOLERANCE } from './presets.js';
+import { ASPECT_TOLERANCE, type Preset } from './presets';
 
 /** Width of the phone-like frame border (each side), in px. */
 const MOBILE_BORDER = 8;
@@ -9,22 +9,27 @@ const INFO_MIN_PADDING = 12;
 /** Horizontal page padding kept around the scaled frame, in px. */
 const SCENE_PADDING = 32;
 
-/**
- * @typedef {object} Settings
- * @property {number} bannerHeight
- * @property {number} avatarSize
- * @property {number} left
- * @property {number} overlap
- * @property {number} margin
- */
+/** User-adjustable values, in px. */
+export interface Settings {
+  bannerHeight: number;
+  avatarSize: number;
+  left: number;
+  overlap: number;
+  margin: number;
+}
+
+export interface Layout {
+  frameWidth: number;
+  bannerHeight: number;
+  avatar: { size: number; left: number; top: number; radius: string; fontSize: number };
+  zone: { left: number; top: number; size: number; radius: string };
+  infoPaddingTop: number;
+}
 
 /**
  * Pure layout computation: everything the renderer needs, in px.
- *
- * @param {import('./presets.js').Preset} preset
- * @param {Settings} settings
  */
-export function computeLayout(preset, settings) {
+export function computeLayout(preset: Preset, settings: Settings): Layout {
   const { bannerHeight, avatarSize, left, overlap, margin } = settings;
   const radius = preset.round ? '50%' : `${preset.cornerRadius}px`;
   const zoneRadius = preset.round ? '50%' : `${preset.cornerRadius + margin}px`;
@@ -51,24 +56,21 @@ export function computeLayout(preset, settings) {
   };
 }
 
-/**
- * Scale factor so a frame fits in the viewport (never above 1).
- *
- * @param {number} viewportWidth
- * @param {number} frameWidth
- */
-export function fitScale(viewportWidth, frameWidth) {
+/** Scale factor so a frame fits in the viewport (never above 1). */
+export function fitScale(viewportWidth: number, frameWidth: number): number {
   return Math.min(1, (viewportWidth - SCENE_PADDING) / frameWidth);
+}
+
+export interface Size {
+  width: number;
+  height: number;
 }
 
 /**
  * Does the image have (about) the same proportions as the displayed banner?
  * If not, LinkedIn will crop it.
- *
- * @param {{ width: number, height: number }} image Natural image size.
- * @param {{ width: number, height: number }} banner Displayed banner size.
  */
-export function hasMatchingAspect(image, banner) {
+export function hasMatchingAspect(image: Size, banner: Size): boolean {
   const imageRatio = image.width / image.height;
   const bannerRatio = banner.width / banner.height;
   return Math.abs(imageRatio / bannerRatio - 1) < ASPECT_TOLERANCE;
@@ -76,12 +78,9 @@ export function hasMatchingAspect(image, banner) {
 
 /**
  * Inline SVG data URL used until the user loads a banner, at the recommended proportions.
- *
- * @param {number} width
- * @param {number} height
- * @param {string} label Text drawn in the middle.
+ * `label` is the text drawn in the middle.
  */
-export function placeholderBanner(width, height, label) {
+export function placeholderBanner(width: number, height: number, label: string): string {
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
     '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
@@ -92,7 +91,6 @@ export function placeholderBanner(width, height, label) {
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
 
-/** @param {string} text */
-function escapeXml(text) {
+function escapeXml(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }

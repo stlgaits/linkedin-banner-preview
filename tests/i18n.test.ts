@@ -1,18 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_LANG, LOCALES, createTranslator, detectLanguage } from '../src/i18n/index.js';
-import { PRESETS } from '../src/presets.js';
+import {
+  DEFAULT_LANG,
+  LOCALES,
+  createTranslator,
+  detectLanguage,
+  type LangCode,
+} from '../src/i18n';
+import { PRESETS, type ModeKey } from '../src/presets';
 
 describe('locales', () => {
   it('define exactly the same keys as English', () => {
     const reference = Object.keys(LOCALES[DEFAULT_LANG]).sort();
-    for (const [lang, messages] of Object.entries(LOCALES)) {
-      expect(Object.keys(messages).sort(), lang).toEqual(reference);
+    for (const lang of Object.keys(LOCALES) as LangCode[]) {
+      expect(Object.keys(LOCALES[lang]).sort(), lang).toEqual(reference);
     }
   });
 
   it('describe every preset', () => {
-    for (const lang of Object.keys(LOCALES)) {
-      for (const mode of Object.keys(PRESETS)) {
+    for (const lang of Object.keys(LOCALES) as LangCode[]) {
+      for (const mode of Object.keys(PRESETS) as ModeKey[]) {
         expect(LOCALES[lang][`note.${mode}`], `${lang} note.${mode}`).toBeTruthy();
         expect(LOCALES[lang][`mode.${mode}`], `${lang} mode.${mode}`).toBeTruthy();
       }
@@ -26,6 +32,7 @@ describe('createTranslator', () => {
   });
   it('falls back to English for an unknown language, and to the key for an unknown key', () => {
     expect(createTranslator('xx')('follow')).toBe(LOCALES.en.follow);
+    // @ts-expect-error unknown keys are rejected at compile time; this checks the runtime fallback
     expect(createTranslator('fr')('does.not.exist')).toBe('does.not.exist');
   });
   it('translates', () => {

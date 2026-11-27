@@ -4,7 +4,7 @@ Thanks for your interest! Bug reports, measurement corrections, translations and
 
 ## Correcting a preset measurement
 
-LinkedIn does not publish its display dimensions, so the presets in `src/presets.js` rely on measurements. If you notice a mismatch, open a **Preset measurement** issue with:
+LinkedIn does not publish its display dimensions, so the presets in `src/presets.ts` rely on measurements. If you notice a mismatch, open a **Preset measurement** issue with:
 
 - the view (company page or profile, desktop or mobile) and the device or browser width;
 - a screenshot of the real LinkedIn page;
@@ -14,7 +14,7 @@ Measurements from a screenshot you took yourself are the most useful. Please say
 
 ## Adding a language
 
-See [Adding a language](README.md#adding-a-language) in the README. A test makes sure every language has exactly the same keys as English.
+See [Adding a language](README.md#adding-a-language) in the README. TypeScript and a test make sure every language has exactly the same keys as English.
 
 ## Development
 
@@ -28,7 +28,7 @@ npm run dev
 Before opening a pull request, run:
 
 ```sh
-npm run lint && npm run format:check && npm test && npm run build && npm run test:e2e
+npm run lint && npm run typecheck && npm run format:check && npm test && npm run build && npm run test:e2e
 ```
 
 CI runs the same checks. `npm run format` fixes formatting for you.
