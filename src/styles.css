@@ -1,0 +1,216 @@
+:root {
+  --accent: #0a66c2;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f4f2ee;
+  color: #000000e6;
+  font:
+    14px/1.4 -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+}
+
+/* ---------- settings bar ---------- */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid #d0d0d0;
+  padding: 10px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  align-items: flex-end;
+  font-size: 13px;
+}
+.bar label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #555;
+}
+.bar select,
+.bar input[type='number'],
+.bar input[type='text'] {
+  font: inherit;
+  padding: 4px 6px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background: #fff;
+}
+.bar input[type='number'] {
+  width: 70px;
+}
+.bar .chk {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  color: #222;
+}
+.bar .group {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  padding-left: 18px;
+  border-left: 1px solid #ddd;
+}
+.bar button {
+  font: inherit;
+  padding: 5px 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background: #f7f7f7;
+  cursor: pointer;
+}
+#infos {
+  width: 100%;
+  color: #555;
+  font-size: 12px;
+}
+#infos b {
+  color: #000;
+}
+#infos .warn {
+  color: #b00020;
+  font-weight: 600;
+}
+
+/* ---------- scene ---------- */
+#scene {
+  padding: 24px 16px 60px;
+  display: flex;
+  justify-content: center;
+}
+#fit {
+  transform-origin: top left;
+}
+#frame {
+  background: #fff;
+  border: 1px solid #e0dfdc;
+  border-radius: 8px;
+  overflow: visible;
+  position: relative;
+}
+#frame.mobile {
+  border-radius: 22px;
+  border: 8px solid #1b1f23;
+  background: #fff;
+}
+
+.banner {
+  position: relative;
+  overflow: hidden;
+  background: #222;
+  border-radius: 8px 8px 0 0;
+}
+#frame.mobile .banner {
+  border-radius: 12px 12px 0 0;
+}
+.banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* safe zone (around the avatar): only shown over the banner */
+.zone {
+  position: absolute;
+  border: 2px dashed #ff2a2a;
+  background: rgba(255, 40, 40, 0.18);
+  display: none;
+  pointer-events: none;
+}
+.show-zone .zone {
+  display: block;
+}
+
+.avatar {
+  position: absolute;
+  z-index: 5;
+  background: #fff;
+  border: 4px solid #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+.avatar .inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #5b7a99, #2f4559);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font:
+    800 44px/1 Arial,
+    sans-serif;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ghost .avatar {
+  opacity: 0.35;
+}
+
+.info {
+  padding: 0 24px 24px;
+}
+#frame.mobile .info {
+  padding: 0 16px 20px;
+}
+.info h1 {
+  margin: 0 0 2px;
+  font-size: 24px;
+  font-weight: 600;
+}
+#frame.mobile .info h1 {
+  font-size: 20px;
+}
+.info .tag {
+  margin: 0;
+  color: #000000e6;
+  font-size: 16px;
+}
+#frame.mobile .info .tag {
+  font-size: 14px;
+}
+.info .meta {
+  margin-top: 6px;
+  color: #00000099;
+  font-size: 14px;
+}
+.info .btns {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+.info .btns span {
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  border: 1px solid #0a66c2;
+  color: #0a66c2;
+}
+.info .btns span:first-child {
+  background: #0a66c2;
+  color: #fff;
+}
+.note {
+  max-width: 1128px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  color: #555;
+  font-size: 12.5px;
+}
