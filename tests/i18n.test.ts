@@ -35,6 +35,22 @@ describe('createTranslator', () => {
     // @ts-expect-error unknown keys are rejected at compile time; this checks the runtime fallback
     expect(createTranslator('fr')('does.not.exist')).toBe('does.not.exist');
   });
+  it('replaces placeholders whose name has several letters, each occurrence', () => {
+    const info = createTranslator('en')('info', {
+      bw: 782,
+      bh: 134,
+      rec: '1512×256 px',
+      nw: 1,
+      nh: 2,
+    });
+    expect(info).toContain('782×134 px');
+    expect(info).toContain('1512×256 px');
+    expect(info).toContain('1×2 px');
+    expect(info).not.toMatch(/\{\w+\}/);
+  });
+  it('leaves a placeholder visible when its value is not provided', () => {
+    expect(createTranslator('en')('upload', { w: 10 })).toBe('Upload your banner (10×{h})');
+  });
   it('translates', () => {
     expect(createTranslator('fr')('follow')).toBe('+ Suivre');
   });
