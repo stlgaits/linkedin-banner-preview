@@ -13,5 +13,10 @@ export default [
     files: ['*.js', 'tests/**/*.js'],
     languageOptions: { globals: globals.node },
   },
+  {
+    // Playwright runs in Node, but `page.evaluate` callbacks run in the browser.
+    files: ['e2e/**/*.js'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
   prettier,
 ];

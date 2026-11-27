@@ -28,7 +28,7 @@ npm run dev
 Before opening a pull request, run:
 
 ```sh
-npm run lint && npm run format:check && npm test && npm run build
+npm run lint && npm run format:check && npm test && npm run build && npm run test:e2e
 ```
 
 CI runs the same checks. `npm run format` fixes formatting for you.
