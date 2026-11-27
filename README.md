@@ -72,6 +72,7 @@ Requires Node.js 20 or later.
 npm install
 npm run dev      # dev server with hot reload
 npm test         # unit tests (Vitest)
+npm run test:e2e # end-to-end tests (Playwright, first run: npx playwright install chromium)
 npm run lint     # ESLint
 npm run format   # Prettier
 npm run build    # standalone dist/index.html
@@ -85,9 +86,10 @@ src/presets.js     display presets and recommended sizes
 src/i18n/          translations (en, fr) and language detection
 src/styles.css     styles
 tests/             unit tests
+e2e/               end-to-end tests (Playwright)
 ```
 
-CI runs lint, format check, tests and build on every pull request.
+CI runs lint, format check, unit and end-to-end tests, and build on every pull request.
 
 ## Contributing
 
