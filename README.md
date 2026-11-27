@@ -1,5 +1,7 @@
 # LinkedIn Banner Preview
 
+**[Try it online](https://stlgaits.github.io/linkedin-banner-preview/)**
+
 A web tool to **preview your LinkedIn banner** before publishing it: see where the avatar or logo covers your image, on desktop or mobile.
 
 It works for **both personal profile banners and company page banners**: pick the matching view in the tool and it applies the right dimensions and avatar shape (round for profiles, rounded square for company logos).
@@ -22,7 +24,7 @@ It works for **both personal profile banners and company page banners**: pick th
 
 ## Usage
 
-Use the hosted version if published via GitHub Pages, or build the tool yourself (see [Development](#development)): `npm run build` produces `dist/index.html`, a **standalone file** you can open by double-clicking it, no server needed.
+Use the [online version](https://stlgaits.github.io/linkedin-banner-preview/), or build the tool yourself (see [Development](#development)): `npm run build` produces `dist/index.html`, a **standalone file** you can open by double-clicking it, no server needed.
 
 The sources in `index.html` and `src/` use ES modules, which browsers refuse to load from `file://`. Use `npm run dev` while working on them.
 
