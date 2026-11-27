@@ -35,6 +35,7 @@ export function detectLanguage(sources: {
   saved?: string | null;
   browser?: string | null;
 }): LangCode {
+  // Stryker disable next-line StringLiteral: any unsupported fallback gives the same result
   const browserLang = (sources.browser ?? '').slice(0, 2).toLowerCase();
   return [sources.param, sources.saved, browserLang].find(isSupported) ?? DEFAULT_LANG;
 }

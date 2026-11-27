@@ -33,6 +33,8 @@ npm run lint && npm run typecheck && npm run format:check && npm test && npm run
 
 CI runs the same checks. `npm run format` fixes formatting for you.
 
+Optionally, `npm run mutation` runs [Stryker](https://stryker-mutator.io/) on the layout and i18n logic: it changes the code in small ways and checks that the unit tests notice. Open `reports/mutation/index.html` to see which changes survived. It takes about a minute, so it is not part of the CI.
+
 ## Pull requests
 
 - Keep them focused: one change per pull request.

@@ -73,6 +73,7 @@ export interface Size {
 export function hasMatchingAspect(image: Size, banner: Size): boolean {
   const imageRatio = image.width / image.height;
   const bannerRatio = banner.width / banner.height;
+  // Stryker disable next-line EqualityOperator: exact equality with the tolerance can't be hit with floats
   return Math.abs(imageRatio / bannerRatio - 1) < ASPECT_TOLERANCE;
 }
 

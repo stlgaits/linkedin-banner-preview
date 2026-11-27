@@ -77,6 +77,7 @@ npm run typecheck # TypeScript (strict)
 npm run lint     # ESLint
 npm run format   # Prettier
 npm run build    # standalone dist/index.html
+npm run mutation # mutation testing (Stryker), slow: not part of CI
 ```
 
 ```

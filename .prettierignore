@@ -1,4 +1,8 @@
 dist/
+docs/
 node_modules/
 package-lock.json
-docs/
+playwright-report/
+reports/
+.stryker-tmp/
+test-results/
