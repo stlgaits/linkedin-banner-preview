@@ -1,344 +1,102 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-i18n="title">LinkedIn Banner Preview</title>
-<style>
-  :root { --accent:#0a66c2; }
-  * { box-sizing: border-box; }
-  body { margin:0; background:#f4f2ee; color:#000000e6;
-         font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Preview your LinkedIn banner on a company page or a personal profile, on desktop and mobile."
+    />
+    <title data-i18n="title">LinkedIn Banner Preview</title>
+  </head>
+  <body>
+    <div class="bar">
+      <label
+        ><span data-i18n="language">Language</span>
+        <select id="lang">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </label>
 
-  /* ---------- settings bar ---------- */
-  .bar { position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid #d0d0d0;
-         padding:10px 16px; display:flex; flex-wrap:wrap; gap:10px 22px; align-items:flex-end; font-size:13px; }
-  .bar label { display:flex; flex-direction:column; gap:3px; color:#555; }
-  .bar select, .bar input[type=number], .bar input[type=text] { font:inherit; padding:4px 6px; border:1px solid #bbb; border-radius:4px; background:#fff; }
-  .bar input[type=number] { width:70px; }
-  .bar .chk { flex-direction:row; align-items:center; gap:6px; color:#222; }
-  .bar .group { display:flex; gap:10px; align-items:flex-end; padding-left:18px; border-left:1px solid #ddd; }
-  .bar button { font:inherit; padding:5px 10px; border:1px solid #bbb; border-radius:4px; background:#f7f7f7; cursor:pointer; }
-  #infos { width:100%; color:#555; font-size:12px; }
-  #infos b { color:#000; }
-  #infos .warn { color:#b00020; font-weight:600; }
+      <label
+        ><span data-i18n="view">View</span>
+        <select id="mode">
+          <option value="page-desktop" data-i18n="mode.page-desktop">Company page – desktop</option>
+          <option value="page-mobile" data-i18n="mode.page-mobile">
+            Company page – mobile (measured)
+          </option>
+          <option value="profil-desktop" data-i18n="mode.profil-desktop">Profile – desktop</option>
+          <option value="profil-mobile" data-i18n="mode.profil-mobile">Profile – mobile</option>
+        </select>
+      </label>
 
-  /* ---------- scene ---------- */
-  #scene { padding:24px 16px 60px; display:flex; justify-content:center; }
-  #fit { transform-origin: top left; }
-  #frame { background:#fff; border:1px solid #e0dfdc; border-radius:8px; overflow:visible; position:relative; }
-  #frame.mobile { border-radius:22px; border:8px solid #1b1f23; background:#fff; }
+      <label
+        ><span data-i18n="banner">Your banner</span>
+        <input type="file" id="bannerFile" accept="image/*" />
+      </label>
+      <label
+        ><span data-i18n="avatar">Your avatar (optional)</span>
+        <input type="file" id="avatarFile" accept="image/*" />
+      </label>
 
-  .banner { position:relative; overflow:hidden; background:#222; border-radius:8px 8px 0 0; }
-  #frame.mobile .banner { border-radius:12px 12px 0 0; }
-  .banner img { display:block; width:100%; height:100%; object-fit:cover; }
+      <label><span data-i18n="name">Name</span><input type="text" id="name" /></label>
+      <label><span data-i18n="tagline">Tagline</span><input type="text" id="tagline" /></label>
 
-  /* safe zone (around the avatar): only shown over the banner */
-  .zone { position:absolute; border:2px dashed #ff2a2a; background:rgba(255,40,40,.18); display:none; pointer-events:none; }
-  .show-zone .zone { display:block; }
+      <label class="chk"
+        ><input type="checkbox" id="zone" />
+        <span data-i18n="zone">Show the area to avoid</span></label
+      >
+      <label class="chk"
+        ><input type="checkbox" id="ghost" />
+        <span data-i18n="ghost">Transparent avatar</span></label
+      >
 
-  .avatar { position:absolute; z-index:5; background:#fff; border:4px solid #fff; overflow:hidden;
-            box-shadow:0 0 0 1px rgba(0,0,0,.08); }
-  .avatar .inner { width:100%; height:100%; background:linear-gradient(160deg,#5b7a99,#2f4559);
-                   display:flex; align-items:center; justify-content:center; color:#fff;
-                   font:800 44px/1 Arial,sans-serif; }
-  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
-  .ghost .avatar { opacity:.35; }
-
-  .info { padding:0 24px 24px; }
-  #frame.mobile .info { padding:0 16px 20px; }
-  .info h1 { margin:0 0 2px; font-size:24px; font-weight:600; }
-  #frame.mobile .info h1 { font-size:20px; }
-  .info .tag { margin:0; color:#000000e6; font-size:16px; }
-  #frame.mobile .info .tag { font-size:14px; }
-  .info .meta { margin-top:6px; color:#00000099; font-size:14px; }
-  .info .btns { margin-top:14px; display:flex; gap:8px; }
-  .info .btns span { padding:7px 18px; border-radius:20px; font-weight:600; border:1px solid #0a66c2; color:#0a66c2; }
-  .info .btns span:first-child { background:#0a66c2; color:#fff; }
-  .note { max-width:1128px; margin:0 auto; padding:0 16px 40px; color:#555; font-size:12.5px; }
-</style>
-</head>
-<body>
-
-<div class="bar">
-  <label><span data-i18n="language">Language</span>
-    <select id="lang"><option value="en">English</option><option value="fr">Français</option></select>
-  </label>
-
-  <label><span data-i18n="view">View</span>
-    <select id="mode">
-      <option value="page-desktop" data-i18n="mode.page-desktop">Company page – desktop</option>
-      <option value="page-mobile" data-i18n="mode.page-mobile">Company page – mobile (measured)</option>
-      <option value="profil-desktop" data-i18n="mode.profil-desktop">Profile – desktop</option>
-      <option value="profil-mobile" data-i18n="mode.profil-mobile">Profile – mobile</option>
-    </select>
-  </label>
-
-  <label><span data-i18n="banner">Your banner</span>
-    <input type="file" id="bannerFile" accept="image/*">
-  </label>
-  <label><span data-i18n="avatar">Your avatar (optional)</span>
-    <input type="file" id="avatarFile" accept="image/*">
-  </label>
-
-  <label><span data-i18n="name">Name</span><input type="text" id="name"></label>
-  <label><span data-i18n="tagline">Tagline</span><input type="text" id="tagline"></label>
-
-  <label class="chk"><input type="checkbox" id="zone"> <span data-i18n="zone">Show the area to avoid</span></label>
-  <label class="chk"><input type="checkbox" id="ghost"> <span data-i18n="ghost">Transparent avatar</span></label>
-
-  <div class="group">
-    <label><span data-i18n="bh">Banner height</span> <input type="number" id="bh" min="40" step="any"></label>
-    <label><span data-i18n="as">Avatar size</span> <input type="number" id="as" min="40" step="1"></label>
-    <label><span data-i18n="al">Left offset</span> <input type="number" id="al" min="0" step="1"></label>
-    <label><span data-i18n="ao">Banner overlap</span> <input type="number" id="ao" min="0" step="1"></label>
-    <label><span data-i18n="am">Safety margin</span> <input type="number" id="am" min="0" step="1"></label>
-    <button id="reset" type="button" data-i18n="reset">Reset to defaults</button>
-  </div>
-
-  <div id="infos"></div>
-</div>
-
-<div id="scene">
-  <div id="fit">
-    <div id="frame">
-      <div class="banner" id="bannerBox">
-        <img id="bannerImg" alt="Banner">
-        <div class="zone" id="zoneBox"></div>
+      <div class="group">
+        <label
+          ><span data-i18n="bh">Banner height</span>
+          <input type="number" id="bh" min="40" step="any"
+        /></label>
+        <label
+          ><span data-i18n="as">Avatar size</span> <input type="number" id="as" min="40" step="1"
+        /></label>
+        <label
+          ><span data-i18n="al">Left offset</span> <input type="number" id="al" min="0" step="1"
+        /></label>
+        <label
+          ><span data-i18n="ao">Banner overlap</span> <input type="number" id="ao" min="0" step="1"
+        /></label>
+        <label
+          ><span data-i18n="am">Safety margin</span> <input type="number" id="am" min="0" step="1"
+        /></label>
+        <button id="reset" type="button" data-i18n="reset">Reset to defaults</button>
       </div>
-      <div class="avatar" id="avatarBox"><div class="inner" id="avatarInner">Y</div></div>
-      <div class="info" id="info">
-        <h1 id="nameOut"></h1>
-        <p class="tag" id="tagOut"></p>
-        <div class="meta" data-i18n="meta"></div>
-        <div class="btns"><span data-i18n="follow">+ Follow</span><span data-i18n="visit">Visit website</span></div>
+
+      <div id="infos"></div>
+    </div>
+
+    <div id="scene">
+      <div id="fit">
+        <div id="frame">
+          <div class="banner" id="bannerBox">
+            <img id="bannerImg" alt="Banner" />
+            <div class="zone" id="zoneBox"></div>
+          </div>
+          <div class="avatar" id="avatarBox"><div class="inner" id="avatarInner">Y</div></div>
+          <div class="info" id="info">
+            <h1 id="nameOut"></h1>
+            <p class="tag" id="tagOut"></p>
+            <div class="meta" data-i18n="meta"></div>
+            <div class="btns">
+              <span data-i18n="follow">+ Follow</span><span data-i18n="visit">Visit website</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<p class="note" data-i18n-html="footer"></p>
+    <p class="note" data-i18n-html="footer"></p>
 
-<script>
-// Display values in px, taken from third-party published measurements (Nov. 2026): LinkedIn does NOT publish these values.
-// Recommended image sizes (official LinkedIn): page 1512×256, profile 1584×396.
-// ---------- internationalisation ----------
-// To add a language: copy the `en` block below, translate the values, and add an <option> to #lang.
-const I18N = {
-  en: {
-    "title": "LinkedIn Banner Preview",
-    "language": "Language",
-    "view": "View",
-    "mode.page-desktop": "Company page – desktop",
-    "mode.page-mobile": "Company page – mobile (measured)",
-    "mode.profil-desktop": "Profile – desktop",
-    "mode.profil-mobile": "Profile – mobile",
-    "banner": "Your banner",
-    "avatar": "Your avatar (optional)",
-    "name": "Name",
-    "tagline": "Tagline",
-    "zone": "Show the area to avoid",
-    "ghost": "Transparent avatar",
-    "bh": "Banner height",
-    "as": "Avatar size",
-    "al": "Left offset",
-    "ao": "Banner overlap",
-    "am": "Safety margin",
-    "reset": "Reset to defaults",
-    "meta": "Industry · City, Country · 11-50 employees",
-    "follow": "+ Follow",
-    "visit": "Visit website",
-    "defName": "Your name",
-    "defTagline": "Your tagline here",
-    "upload": "Upload your banner ({w}×{h})",
-    "info": "Banner displayed at <b>{bw}×{bh} px</b> (image size recommended by LinkedIn: <b>{rec}</b>) · your image: <b>{nw}×{nh} px</b>",
-    "warn": "⚠ different proportions: LinkedIn will crop the image",
-    "zoom": "display zoom: {z} %",
-    "footer": "<b>Important:</b> LinkedIn's display dimensions (avatar size and position, banner height) are <b>estimates</b> and may change. Compare with a screenshot of your real page and adjust the settings above until the avatar lands in the same spot: the red zone then shows what will be hidden. Nothing is uploaded anywhere: everything stays in your browser.",
-    "note.page-desktop": "Third-party measurements (public web): banner 782×134, logo 128 px. Logo offset and overlap are inferred, low to medium reliability.",
-    "note.page-mobile": "MEASURED on a screenshot of the mobile app (1080 px wide screen, scaled to 428 px): 99 px logo including the white frame, 13 px from the edge, 34 px over the banner. Banner height (73 px) is inferred from the 5.9:1 ratio: the top of the banner was transparent in the screenshot.",
-    "note.profil-desktop": "Third-party measurements (public web): banner 782×195.5, round 128 px avatar, 32 px from the edge, 68 px over the banner. Another source gives an avatar of about 152 px.",
-    "note.profil-mobile": "Third-party measurement on mobile web (430 px viewport): round 128 px avatar, 24 px from the edge, 76 px over the banner. No reliable measurement for the native app: check on your phone.",
-  },
-  fr: {
-    "title": "Aperçu de bannière LinkedIn",
-    "language": "Langue",
-    "view": "Affichage",
-    "mode.page-desktop": "Page entreprise – ordinateur",
-    "mode.page-mobile": "Page entreprise – mobile (mesuré)",
-    "mode.profil-desktop": "Profil – ordinateur",
-    "mode.profil-mobile": "Profil – mobile",
-    "banner": "Votre bannière",
-    "avatar": "Votre avatar (optionnel)",
-    "name": "Nom",
-    "tagline": "Slogan",
-    "zone": "Montrer la zone à éviter",
-    "ghost": "Avatar transparent",
-    "bh": "Hauteur bannière",
-    "as": "Taille avatar",
-    "al": "Décalage gauche",
-    "ao": "Chevauchement bannière",
-    "am": "Marge sécurité",
-    "reset": "Valeurs par défaut",
-    "meta": "Secteur d'activité · Ville, Pays · 11-50 employés",
-    "follow": "+ Suivre",
-    "visit": "Visiter le site web",
-    "defName": "Votre nom",
-    "defTagline": "Votre slogan ici",
-    "upload": "Chargez votre bannière ({w}×{h})",
-    "info": "Bannière affichée à <b>{bw}×{bh} px</b> (image recommandée par LinkedIn : <b>{rec}</b>) · votre image : <b>{nw}×{nh} px</b>",
-    "warn": "⚠ proportions différentes : LinkedIn recadrera l'image",
-    "zoom": "zoom d'affichage : {z} %",
-    "footer": "<b>Important :</b> les dimensions d'affichage de LinkedIn (taille et position de l'avatar, hauteur de bannière) sont des <b>estimations</b> et peuvent changer. Comparez avec une capture de votre vraie page, et ajustez les réglages ci-dessus jusqu'à ce que l'avatar tombe au même endroit : la zone rouge vous montre alors ce qui sera caché. Rien n'est envoyé nulle part : tout reste dans votre navigateur.",
-    "note.page-desktop": "Mesures tierces (web public) : bannière 782×134, logo 128 px. Décalage et chevauchement du logo : déduits, fiabilité faible à moyenne.",
-    "note.page-mobile": "MESURÉ sur une capture de l'app mobile (écran 1080 px de large, ramené à 428 px) : logo 99 px cadre blanc compris, à 13 px du bord, 34 px sur la bannière. La hauteur de bannière (73 px) est déduite du format 5,9:1 : le haut de la bannière était transparent sur la capture.",
-    "note.profil-desktop": "Mesures tierces (web public) : bannière 782×195,5, avatar rond 128 px, à 32 px du bord, 68 px sur la bannière. Une autre source donne un avatar d'environ 152 px.",
-    "note.profil-mobile": "Mesure tierce sur le web mobile (viewport 430 px) : avatar rond 128 px, à 24 px du bord, 76 px sur la bannière. Pas de mesure fiable pour l'app native : à valider sur votre téléphone.",
-  },
-};
-let lang = 'en';
-const t = (key, vars = {}) =>
-  (I18N[lang][key] ?? I18N.en[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k]);
-
-const PRESETS = {
-  'page-desktop':   { w:782, bh:134,   as:128, al:24, ao:63, am:12, round:false, mobile:false, kind:'page' },
-  'page-mobile':    { w:428, bh:73.3,  as:99,  al:13, ao:34, am:8,  round:false, rad:14, mobile:true,  kind:'page' },
-  'profil-desktop': { w:782, bh:195.5, as:128, al:32, ao:68, am:12, round:true,  mobile:false, kind:'profil' },
-  'profil-mobile':  { w:428, bh:107,   as:128, al:24, ao:76, am:8,  round:true,  mobile:true,  kind:'profil' },
-};
-// Placeholder banner (inline SVG) until a file is loaded, at the recommended proportions.
-const placeholder = (kind) => { const [w, h] = kind === 'page' ? [1512, 256] : [1584, 396]; return 'data:image/svg+xml;utf8,' + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
-  '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b6ea5"/><stop offset="1" stop-color="#1d3557"/></linearGradient></defs>' +
-  '<rect width="100%" height="100%" fill="url(#g)"/>' +
-  '<text x="50%" y="50%" fill="#fff" fill-opacity=".85" font-family="Arial,sans-serif" font-size="' + Math.round(h / 9) +
-  '" text-anchor="middle" dominant-baseline="middle">' + t('upload', { w, h }) + '</text></svg>'); };
-
-const $ = id => document.getElementById(id);
-const modeSel = $('mode'), frame = $('frame'), fit = $('fit');
-let customBanner = null;   // URL of a file chosen by the user
-let currentPreset = null;
-
-function fillInputs(p) { $('bh').value=p.bh; $('as').value=p.as; $('al').value=p.al; $('ao').value=p.ao; $('am').value=p.am; }
-
-let nameTouched = false, taglineTouched = false;
-
-function applyLang() {
-  document.documentElement.lang = lang;
-  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
-  if (!nameTouched) $('name').value = t('defName');
-  if (!taglineTouched) $('tagline').value = t('defTagline');
-  $('lang').value = lang;
-}
-
-function setLang(l, persist) {
-  if (!I18N[l]) return;
-  lang = l;
-  if (persist) try { localStorage.setItem('lang', l); } catch (e) {}
-  applyLang();
-  if (currentPreset) render();
-}
-
-function render() {
-  const p = currentPreset;
-  const bh = +$('bh').value, as = +$('as').value, al = +$('al').value, ao = +$('ao').value, am = +$('am').value;
-
-  frame.className = p.mobile ? 'mobile' : '';
-  frame.style.width = (p.w + (p.mobile ? 16 : 2)) + 'px';
-  const bw = p.w;                       // usable banner width
-  $('bannerBox').style.height = bh + 'px';
-  $('bannerImg').src = customBanner || placeholder(p.kind);
-
-  // avatar (positioned relative to the frame, below the banner)
-  // (absolute position inside the frame, so it doesn't add its border thickness)
-  const av = $('avatarBox');
-  av.style.width = av.style.height = as + 'px';
-  av.style.left = al + 'px';
-  av.style.top  = (bh - ao) + 'px';
-  const rad = p.round ? '50%' : (p.rad || 6) + 'px';
-  av.style.borderRadius = rad;
-  $('avatarInner').style.fontSize = (as * 0.45) + 'px';
-  $('nameOut').textContent = $('name').value;
-  $('tagOut').textContent = $('tagline').value;
-  if (!$('avatarInner').querySelector('img')) $('avatarInner').textContent = ($('name').value.trim()[0] || '?').toUpperCase();
-
-  // area to avoid = avatar + margin, only visible over the banner
-  const z = $('zoneBox');
-  z.style.left = (al - am) + 'px';
-  z.style.top = (bh - ao - am) + 'px';
-  z.style.width = z.style.height = (as + 2 * am) + 'px';
-  z.style.borderRadius = p.round ? '50%' : ((p.rad || 6) + am) + 'px';
-
-  document.body.classList.toggle('show-zone', $('zone').checked);
-  frame.classList.toggle('ghost', $('ghost').checked);
-  document.body.classList.toggle('ghost', $('ghost').checked);
-
-  // text below the banner: leave room for the avatar
-  $('info').style.paddingTop = Math.max(12, as - ao + 12) + 'px';
-
-  updateFit();
-  updateInfos(p, bw, bh);
-}
-
-function updateFit() {
-  const avail = document.documentElement.clientWidth - 32;
-  const s = Math.min(1, avail / frame.offsetWidth);
-  fit.style.transform = 'scale(' + s + ')';
-  fit.style.width = frame.offsetWidth + 'px';
-  fit.style.height = frame.offsetHeight + 'px';
-  $('scene').style.height = (frame.offsetHeight * s + 90) + 'px';
-  fit.dataset.scale = s;
-}
-
-function updateInfos(p, bw, bh) {
-  const img = $('bannerImg');
-  const check = () => {
-    const nr = img.naturalWidth / img.naturalHeight, tr = bw / bh;
-    const ok = Math.abs(nr / tr - 1) < 0.03;
-    const rec = p.kind === 'page' ? '1512×256 px' : '1584×396 px';
-    $('infos').innerHTML =
-      t('info', { bw, bh, rec, nw: img.naturalWidth, nh: img.naturalHeight }) +
-      (ok ? '' : ' · <span class="warn">' + t('warn') + '</span>') +
-      ' · ' + t('zoom', { z: Math.round((fit.dataset.scale || 1) * 100) }) +
-      '<br><i>' + t('note.' + modeSel.value) + '</i>';
-  };
-  if (img.complete && img.naturalWidth) check(); else img.onload = check;
-}
-
-function setMode() {
-  currentPreset = PRESETS[modeSel.value];
-  fillInputs(currentPreset);
-  render();
-}
-
-modeSel.addEventListener('change', () => setMode());
-$('bannerFile').addEventListener('change', e => {
-  const f = e.target.files[0]; if (!f) return;
-  customBanner = URL.createObjectURL(f); render();
-});
-$('avatarFile').addEventListener('change', e => {
-  const f = e.target.files[0]; if (!f) return;
-  $('avatarInner').innerHTML = '<img alt="Avatar" src="' + URL.createObjectURL(f) + '">';
-});
-['bh','as','al','ao','am','zone','ghost','name','tagline'].forEach(id => $(id).addEventListener('input', render));
-$('reset').addEventListener('click', () => { fillInputs(currentPreset); render(); });
-$('lang').addEventListener('change', e => setLang(e.target.value, true));
-$('name').addEventListener('input', () => { nameTouched = true; });
-$('tagline').addEventListener('input', () => { taglineTouched = true; });
-window.addEventListener('resize', updateFit);
-
-// Optional URL parameters (also: ?lang=fr) : ?mode=page-mobile&zone=1&ghost=1
-const q = new URLSearchParams(location.search);
-if (PRESETS[q.get('mode')]) modeSel.value = q.get('mode');
-if (q.get('zone') === '1') $('zone').checked = true;
-if (q.get('ghost') === '1') $('ghost').checked = true;
-
-let saved = null;
-try { saved = localStorage.getItem('lang'); } catch (e) {}
-const guess = (navigator.language || 'en').slice(0, 2).toLowerCase();
-setLang([q.get('lang'), saved, guess].find(l => I18N[l]) || 'en', false);
-setMode();
-</script>
-</body>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
