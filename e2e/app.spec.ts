@@ -1,17 +1,31 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
-const bannerSvg = (width, height) =>
+const bannerSvg = (width: number, height: number) =>
   Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#3a7"/></svg>`,
   );
-const svgFile = (name, width, height) => ({
+const svgFile = (name: string, width: number, height: number) => ({
   name,
   mimeType: 'image/svg+xml',
   buffer: bannerSvg(width, height),
 });
 
-// Values from src/presets.js, as displayed in the settings inputs.
-const PRESET_VALUES = {
+const SETTING_IDS = ['bh', 'as', 'al', 'ao', 'am'] as const;
+
+interface ExpectedView extends Record<(typeof SETTING_IDS)[number], string> {
+  mobile: boolean;
+  round: boolean;
+}
+
+/** `boundingBox()` is null for hidden elements: fail with a clear message instead of a TypeError. */
+async function boxOf(locator: Locator) {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error('Element has no bounding box (is it visible?)');
+  return box;
+}
+
+// Values from src/presets.ts, as displayed in the settings inputs.
+const PRESET_VALUES: Record<string, ExpectedView> = {
   'page-desktop': {
     bh: '134',
     as: '128',
@@ -51,7 +65,7 @@ test.describe('initial state', () => {
   });
 
   test('never contacts another origin: nothing leaves the browser', async ({ page }) => {
-    const external = [];
+    const external: string[] = [];
     page.on('request', (request) => {
       const url = new URL(request.url());
       if (!['data:', 'blob:'].includes(url.protocol) && url.hostname !== 'localhost') {
@@ -66,7 +80,7 @@ test.describe('initial state', () => {
   });
 
   test('has no console errors', async ({ page }) => {
-    const errors = [];
+    const errors: string[] = [];
     page.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto('/');
@@ -81,7 +95,7 @@ test.describe('views', () => {
       await page.goto('/');
       await page.locator('#mode').selectOption(mode);
 
-      for (const id of ['bh', 'as', 'al', 'ao', 'am']) {
+      for (const id of SETTING_IDS) {
         await expect(page.locator(`#${id}`)).toHaveValue(expected[id]);
       }
       await expect(page.locator('#frame')).toHaveClass(
@@ -109,8 +123,8 @@ test.describe('views', () => {
 
   test('keeps the avatar on the banner by the configured overlap', async ({ page }) => {
     await page.goto('/?mode=page-desktop');
-    const banner = await page.locator('#bannerBox').boundingBox();
-    const avatar = await page.locator('#avatarBox').boundingBox();
+    const banner = await boxOf(page.locator('#bannerBox'));
+    const avatar = await boxOf(page.locator('#avatarBox'));
     const scale = Number(await page.locator('#fit').getAttribute('data-scale'));
     const overlap = (banner.y + banner.height - avatar.y) / scale;
     expect(overlap).toBeCloseTo(63, 0);
@@ -264,7 +278,7 @@ test.describe('language', () => {
     await page.goto('/?mode=page-mobile&lang=fr');
     await expect(page.locator('#infos i')).toContainText('MESURÉ');
     const src = await page.locator('#bannerImg').getAttribute('src');
-    expect(decodeURIComponent(src)).toContain('Chargez votre bannière');
+    expect(decodeURIComponent(src ?? '')).toContain('Chargez votre bannière');
   });
 
   test('default name and tagline follow the language until they are edited', async ({ page }) => {

@@ -45,11 +45,11 @@ URL parameters let you share a configuration:
 
 ## Adding a language
 
-1. Copy `src/i18n/en.js` to `src/i18n/xx.js` and translate the values (keep the keys and the `{placeholders}`).
-2. Register it in `src/i18n/index.js`.
+1. Copy `src/i18n/fr.ts` to `src/i18n/xx.ts` and translate the values (keep the keys and the `{placeholders}`).
+2. Register it in `src/i18n/index.ts`.
 3. Add an `<option>` to the `#lang` select in `index.html`.
 
-A test checks that every language defines exactly the same keys as English. Pull requests for new languages are welcome.
+TypeScript refuses a language with a missing or unknown key, and a test checks it too. Pull requests for new languages are welcome.
 
 ## Recommended sizes
 
@@ -73,6 +73,7 @@ npm install
 npm run dev      # dev server with hot reload
 npm test         # unit tests (Vitest)
 npm run test:e2e # end-to-end tests (Playwright, first run: npx playwright install chromium)
+npm run typecheck # TypeScript (strict)
 npm run lint     # ESLint
 npm run format   # Prettier
 npm run build    # standalone dist/index.html
@@ -80,9 +81,9 @@ npm run build    # standalone dist/index.html
 
 ```
 index.html         page markup
-src/main.js        DOM wiring and rendering
-src/geometry.js    pure layout computations (unit tested)
-src/presets.js     display presets and recommended sizes
+src/main.ts        DOM wiring and rendering
+src/geometry.ts    pure layout computations (unit tested)
+src/presets.ts     display presets and recommended sizes
 src/i18n/          translations (en, fr) and language detection
 src/styles.css     styles
 tests/             unit tests

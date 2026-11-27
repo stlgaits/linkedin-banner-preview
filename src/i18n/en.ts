@@ -1,5 +1,5 @@
-/** @type {Record<string, string>} */
-export default {
+/** English is the reference: its keys define `MessageKey`, every other language must match. */
+const en = {
   title: 'LinkedIn Banner Preview',
   language: 'Language',
   view: 'View',
@@ -39,3 +39,7 @@ export default {
   'note.profil-mobile':
     'Third-party measurement on mobile web (430 px viewport): round 128 px avatar, 24 px from the edge, 76 px over the banner. No reliable measurement for the native app: check on your phone.',
 };
+
+export default en;
+export type MessageKey = keyof typeof en;
+export type Messages = Record<MessageKey, string>;
