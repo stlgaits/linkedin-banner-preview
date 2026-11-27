@@ -1,0 +1,36 @@
+name: Preset measurement
+description: The avatar or banner position does not match the real LinkedIn page
+labels: [presets]
+body:
+  - type: dropdown
+    id: view
+    attributes:
+      label: View
+      options:
+        - Company page – desktop
+        - Company page – mobile
+        - Profile – desktop
+        - Profile – mobile
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device / browser / viewport width
+      placeholder: 'e.g. Chrome 140 on desktop, 1440 px wide'
+    validations:
+      required: true
+  - type: textarea
+    id: measured
+    attributes:
+      label: Values you measured
+      description: Banner height, avatar size, left offset, overlap on the banner, in CSS px. Say how you measured.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot of the real LinkedIn page
+      description: Drag and drop an image here. Remove anything private.
+    validations:
+      required: true

@@ -89,7 +89,7 @@ CI runs lint, format check, tests and build on every pull request.
 
 ## Contributing
 
-Issues and pull requests are welcome, especially to refine the presets (with a source or a screenshot).
+Issues and pull requests are welcome, especially to refine the presets (with a source or a screenshot). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
